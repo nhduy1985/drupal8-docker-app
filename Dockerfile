@@ -8,9 +8,10 @@ RUN apt-get update
 RUN dpkg-divert --local --rename --add /sbin/initctl
 RUN ln -sf /bin/true /sbin/initctl
 
-RUN apt-get -y install git curl wget supervisor openssh-server \
+RUN apt-get -y install dos2unix git curl wget supervisor openssh-server \
   mysql-client mysql-server apache2 libapache2-mod-php5 pwgen \
   vim-tiny mc python-setuptools unison memcached php5-memcache \
+  nodejs npm \
   php5-cli php5-mysql php-apc php5-gd php5-curl php5-xdebug; \
   apt-get clean; \
   apt-get autoclean; \
@@ -57,14 +58,14 @@ RUN /.composer/vendor/drush/drush/drush --version && ln -s /.composer/vendor/dru
 # Drupal new version, clean cache
 ADD https://www.drupal.org/project/drupal /tmp/latest.html
 
-# Retrieve drupal
-RUN rm -rf /var/www/html ; cd /var/www ; /.composer/vendor/drush/drush/drush -v dl drupal --default-major=8 --drupal-project-rename="html"
-RUN chmod a+w /var/www/html/sites/default ; mkdir /var/www/html/sites/default/files ; chown -R www-data:www-data /var/www/html/
+VOLUME /var/www
 
-#Manage db with adminer
-RUN wget "http://www.adminer.org/latest.php" -O /var/www/html/adminer.php
+RUN chmod a+w /var/www/html/sites/default ; chown -R www-data:www-data /var/www/html/
 
 RUN chmod 755 /start.sh /etc/apache2/foreground.sh
+
 WORKDIR /var/www/html
 EXPOSE 22 80 3306
-CMD ["/bin/bash", "/start.sh"]
+
+#CMD ["dos2unix", "/start.sh /etc/apache2/foreground.sh"]
+#CMD ["/bin/bash", "/start.sh"]
