@@ -67,5 +67,5 @@ RUN chmod 755 /start.sh /etc/apache2/foreground.sh
 WORKDIR /var/www/html
 EXPOSE 22 80 3306
 
-#CMD ["dos2unix", "/start.sh /etc/apache2/foreground.sh"]
-#CMD ["/bin/bash", "/start.sh"]
+CMD ["dos2unix", "/start.sh /etc/apache2/foreground.sh"]
+CMD ["/bin/bash", "/start.sh"]
